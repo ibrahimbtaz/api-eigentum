@@ -17,4 +17,13 @@ class ApiFormatter{
         return response()->json(self::$response, self::$response['code']);
     }
 
+    public static function view($view, $data){
+        return view($view, $data);
+    }
+    public static function redirect($view){
+        return redirect($view);
+    }
+
+
+
 }

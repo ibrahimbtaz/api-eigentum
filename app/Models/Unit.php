@@ -12,19 +12,5 @@ class Unit extends Model
     use SoftDeletes;
 
     protected $table = 'units';
-    protected $fillable = [
-        'title',
-        'description',
-        'price',
-        'rent',
-        'image-1',
-        'image-2',
-        'image-3',
-        'image-4',
-        'image-plan',
-        'bloc',
-        'certificate',
-        'specification_id',
-        'properties_id',
-    ];
+    protected $guarded = ['id'];
 }
