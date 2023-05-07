@@ -18,6 +18,7 @@ class UnitController extends Controller
 
         if($data){
             return ApiFormatter::createApi('200', 'Success', $data);
+                                // .view('admin.unit.all',["units" => Unit::all()]);
         }else{
             return ApiFormatter::createApi('404', 'Data Not Found', null);
         }
@@ -149,4 +150,33 @@ class UnitController extends Controller
                 return ApiFormatter::createApi('400', 'Internal Server Error', null);
             }
     }
+
+    public function upload(Request $request){
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        ]);
+
+        $image_path = $request->file('image')->store('image', 'public');
+
+        $data = [
+            'image' => $image_path,
+        ];
+
+        return ApiFormatter::createApi('200', 'Data Created', $data);
+    }
+    public function upload2(Request $request){
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        ]);
+
+        $image_path = $request->file('image')->store('image', 'public');
+
+        $data = [
+            'image' => $image_path,
+        ];
+
+        return ApiFormatter::createApi('200', 'Data Created', $data);
+    }
+
 }
+   

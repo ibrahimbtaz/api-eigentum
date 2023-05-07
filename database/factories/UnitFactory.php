@@ -17,19 +17,19 @@ class UnitFactory extends Factory
     public function definition(): array
     {
         return [
-                'title' => fake()->text(),
-                'description' => fake()->text(),
-                'price' => fake()->randomDigit(),
-                'rent' => fake()->randomDigit(),
-                'image-1' => fake()->text(),
-                'image-2' => fake()->text(),
-                'image-3' => fake()->text(),
-                'image-4' => fake()->text(),
-                'image-plan' => fake()->text(),
-                'bloc' => fake()->text(),
-                'certificate' => fake()->text(),
-                'specification_id' => mt_rand(1,7),
-                'property_id' => mt_rand(1,7)
+            'title' => fake()->text(5),
+            'description' => fake()->text(5),
+            'price' => fake()->randomDigit(),
+            'rent' => fake()->randomDigit(),
+            'image_1' => fake()->image(),
+            'image_2' => fake()->image(),
+            'image_3' => fake()->image(),
+            'image_4' => fake()->image(),
+            'image_plan' => fake()->image(),
+            'bloc' => fake()->randomDigit(),
+            'certificate' => fake()->text(5),
+            // 'specification_id' => mt_rand(1,7),
+            // 'property_id' => mt_rand(1,7)
         ];
     }
 }

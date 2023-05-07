@@ -24,8 +24,10 @@ Route::group(['prefix' => 'unit'], function () {
     Route::get('/data',[UnitController::class, 'index']);
     Route::post('/store',[UnitController::class, 'store']);
     Route::post('/update/{id}',[UnitController::class, 'update']);
+    Route::post('/upload', [UnitController::class, 'upload']);
     Route::get('/show/{id}',[UnitController::class, 'show']);
     Route::get('/delete/{id}',[UnitController::class, 'destroy']);
+    
 });
 
 Route::group(['prefix' => 'property'], function () {
