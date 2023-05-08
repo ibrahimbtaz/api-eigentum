@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\ApiFormatter;
 use App\Models\Agent;
+use Exception;
 use Illuminate\Http\Request;
 
 class AgentController extends Controller
@@ -27,15 +28,47 @@ class AgentController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.agent.create',[
+        ]);
     }
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'email' => 'required|email|unique:users',
+                'password'  => 'required|min:8',
+                'name'    => 'required',
+                'address'   => 'required',
+                'location'  => 'required',
+                'ktp'    => 'required',
+                'phone_number'  => 'required',
+            ]);
+
+            $image = $request->file('image');
+            $image_name = time().'.'.$image->extension();
+            $image->move(public_path('images'),$image_name);
+
+            $data = Agent::create([
+                'email' => $request->email,
+                'password'  => bcrypt($request->password),
+                'name'  => $request->name,
+                'address'   => $request->address,
+                'location'  => $request->location,
+                'ktp'   => $request->ktp,
+                'phone_number'  => $request->phone_number,
+            ]);
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('400', 'Failed', null);
+        }
     }
 
     /**
@@ -43,7 +76,9 @@ class AgentController extends Controller
      */
     public function show(Agent $agent)
     {
-        //
+        return view('admin.agent.show',[
+            "agent" => $agent
+        ]);
     }
 
     /**
@@ -51,7 +86,9 @@ class AgentController extends Controller
      */
     public function edit(Agent $agent)
     {
-        //
+        return view('admin.agent.edit',[
+            "agent" => $agent
+        ]);
     }
 
     /**
@@ -59,7 +96,39 @@ class AgentController extends Controller
      */
     public function update(Request $request, Agent $agent)
     {
-        //
+        try{
+            $request->validate([
+                'email' => 'required|email|unique:users',
+                'password'  => 'required|min:8',
+                'name'    => 'required',
+                'address'   => 'required',
+                'location'  => 'required',
+                'ktp'    => 'required',
+                'phone_number'  => 'required',
+            ]);
+
+            // $image = $request->file('image');
+            // $image_name = time().'.'.$image->extension();
+            // $image->move(public_path('images'),$image_name);
+
+            $data = Agent::where('id',$agent->id)->update([
+                'email' => $request->email,
+                'password'  => bcrypt($request->password),
+                'name'  => $request->name,
+                'address'   => $request->address,
+                'location'  => $request->location,
+                'ktp'   => $request->ktp,
+                'phone_number'  => $request->phone_number,
+            ]);
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('400', 'Failed', null);
+        }
     }
 
     /**
@@ -67,6 +136,16 @@ class AgentController extends Controller
      */
     public function destroy(Agent $agent)
     {
-        //
+        try{
+            $data = Agent::where('id',$agent->id)->delete();
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('400', 'Failed', null);
+        }
     }
 }

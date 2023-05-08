@@ -18,8 +18,8 @@ class UnitController extends Controller
         $data = Unit::all();
 
         if($data){
-            return ApiFormatter::createApi('200', 'Success', $data)
-                                .view('admin.unit.all',["units" => Unit::all()]);
+            return ApiFormatter::createApi('200', 'Success', $data);
+                                // .view('admin.unit.all',["units" => Unit::all()]);
         }else{
             return ApiFormatter::createApi('404', 'Data Not Found', null);
         }

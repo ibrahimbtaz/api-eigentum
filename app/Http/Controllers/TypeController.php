@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\ApiFormatter;
 use App\Models\Type;
+use Exception;
 use Illuminate\Http\Request;
 
 class TypeController extends Controller
@@ -27,7 +28,8 @@ class TypeController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.type.create',[
+        ]);
     }
 
     /**
@@ -35,7 +37,27 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'housing'   => 'required',
+                'apartement'    => 'required',
+                'villa' => 'required',
+            ]);
+
+            $data = Type::create([
+                'housing'   => $request->housing,
+                'apartement'    => $request->apartement,
+                'villa' => $request->villa,
+            ]);
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('400', 'Failed', null);
+        }
     }
 
     /**
@@ -43,15 +65,20 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        //
+        return view('admin.type.show',[
+            'data' => $type
+        ]);
     }
+    
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Type $type)
     {
-        //
+        return view('admin.type.edit',[
+            'data' => $type
+        ]);
     }
 
     /**
@@ -59,7 +86,27 @@ class TypeController extends Controller
      */
     public function update(Request $request, Type $type)
     {
-        //
+        try{
+            $request->validate([
+                'housing'   => 'required',
+                'apartement'    => 'required',
+                'villa' => 'required',
+            ]);
+
+            $data = Type::where('id',$type->id)->update([
+                'housing'   => $request->housing,
+                'apartement'    => $request->apartement,
+                'villa' => $request->villa,
+            ]);
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('400', 'Failed', null);
+        }
     }
 
     /**
@@ -67,6 +114,16 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
-        //
+        try{
+            $data = Type::where('id',$type->id)->delete();
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('400', 'Failed', null);
+        }
     }
 }
