@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\ApiFormatter;
 use App\Models\Property;
+use Exception;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
@@ -25,9 +26,9 @@ class PropertyController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
+    public function create(){
+        return view('admin.property.create',[
+        ]);
     }
 
     /**
@@ -35,7 +36,35 @@ class PropertyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'unit'  => 'required',
+                'property'  => 'required',
+                'description'   => 'required',
+                'address'   => 'required',
+                'type_id'   => 'required',
+                'developer_id'  => 'required',
+                'agent_id'  => 'required',
+            ]);
+
+            $data = Property::create([
+                'unit'  => $request->unit,
+                'property'  => $request->property,
+                'description'   => $request->description,
+                'address'   => $request->address,
+                'type_id'   => $request->type_id,
+                'developer_id'  => $request->developer_id,
+                'agent_id'  => $request->agent_id,
+            ]);
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('500', 'Internal Server Error', null);
+        }
     }
 
     /**
@@ -43,7 +72,9 @@ class PropertyController extends Controller
      */
     public function show(Property $property)
     {
-        //
+        return view('admin.property.show',[
+            'property' => $property,
+        ]);
     }
 
     /**
@@ -51,22 +82,70 @@ class PropertyController extends Controller
      */
     public function edit(Property $property)
     {
-        //
+        return view('admin.property.edit',[
+            'property' => $property,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Property $property)
+    
+    public function update(Request $request, Property $property, string $id)
     {
-        //
+        try{
+            $request->validate([
+                'unit'  => 'required',
+                'property'  => 'required',
+                'description'   => 'required',
+                'address'   => 'required',
+                'type_id'   => 'required',
+                'developer_id'  => 'required',
+                'agent_id'  => 'required',
+            ]);
+
+            $property = Property::findOrfail($id);
+
+            $data = Property::where('id',$property->id)->update([
+                'unit'  => $request->unit,
+                'property'  => $request->property,
+                'description'   => $request->description,
+                'address'   => $request->address,
+                'type_id'   => $request->type_id,
+                'developer_id'  => $request->developer_id,
+                'agent_id'  => $request->agent_id,
+            ]);
+
+            $data = Property::where('id','=', $property->id)->get();
+
+
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('500', 'Internal Server Error', null);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Property $property)
+    
+    public function destroy(Property $property,string $id)
     {
-        //
+        try{
+            $property = Property::findOrfail($id);
+
+            $data = $property->delete();
+            if($data){
+                return ApiFormatter::createApi('200', 'Success', $data);
+            }else{
+                return ApiFormatter::createApi('400', 'Failed', null);
+            }
+        }catch(Exception $e){
+            return ApiFormatter::createApi('500', 'Internal Server Error', null);
+        }
     }
 }
