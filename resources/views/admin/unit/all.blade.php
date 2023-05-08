@@ -113,7 +113,7 @@
                                     </div> --}}
                                 @else
                                     <tr>
-                                        <td colspan="8" align="center">Data Tidak Ditemukan</td>
+                                        <td colspan="100" align="center">Data Tidak Ditemukan</td>
                                     </tr>
                                 @endif
                             </tbody>

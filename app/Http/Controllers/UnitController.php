@@ -6,6 +6,8 @@ use App\Helper\ApiFormatter;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class UnitController extends Controller
@@ -18,11 +20,12 @@ class UnitController extends Controller
         $data = Unit::all();
 
         if($data){
-            return ApiFormatter::createApi('200', 'Success', $data)
-                                .view('admin.unit.all',["units" => Unit::all()]);
+            return ApiFormatter::createApi('200', 'Success', $data);
+            // return view('admin.unit.all',['units' => $data]);
         }else{
             return ApiFormatter::createApi('404', 'Data Not Found', null);
         }
+
 
 
     }
@@ -48,39 +51,54 @@ class UnitController extends Controller
                 'description' => 'required',
                 'price' => 'required',
                 'rent' => 'required',
-                'image_1' =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_2' =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_3' =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_4' =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_plan' =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                'image_1' =>  'required',
+                'image_2' =>  'required',
+                'image_3' =>  'required',
+                'image_4' =>  'required',
+                'image_plan' =>  'required',
                 'bloc' => 'required',
-                'certificate' =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                'certificate' =>  'required',
                 // 'specification_id' => 'required',
                 // 'properties_id' => 'required',
             ]);
             
-            $image_path_1 = $request->file('image_1')->store('image', 'public');
-            $image_path_2 = $request->file('image_2')->store('image', 'public');
-            $image_path_3 = $request->file('image_3')->store('image', 'public');
-            $image_path_4 = $request->file('image_4')->store('image', 'public');
-            $image_path_5 = $request->file('image_plan')->store('image', 'public');
-            $image_path_6 = $request->file('certificate')->store('image', 'public');
+            $imageName1 = Str::random(32).".".$request->image_1->getClientOriginalExtension();
+            $imageName2 = Str::random(32).".".$request->image_2->getClientOriginalExtension();
+            $imageName3 = Str::random(32).".".$request->image_3->getClientOriginalExtension();
+            $imageName4 = Str::random(32).".".$request->image_4->getClientOriginalExtension();
+            $imageName5 = Str::random(32).".".$request->image_plan->getClientOriginalExtension();
+            $imageName6 = Str::random(32).".".$request->certificate->getClientOriginalExtension();
+
+            // $image_1 = $request->file('image_1')->store('image', 'public');
+            // $image_2 = $request->file('image_2')->store('image', 'public');
+            // $image_3 = $request->file('image_3')->store('image', 'public');
+            // $image_4 = $request->file('image_4')->store('image', 'public');
+            // $image_plan = $request->file('image_plan')->store('image', 'public');
+            // $image_6 = $request->file('certificate')->store('image', 'public');
 
             $unit = Unit::create([
                 'title' => $request->title,
                 'description' => $request->description,
                 'price' => $request->price,
                 'rent' => $request->rent,
-                'image_1' => $request->$image_path_1,
-                'image_2' => $request->image_path_2,
-                'image_3' => $request->image_path_3,
-                'image_4' => $request->image_path_4,
-                'image_plan' => $request->image_path_5,
+                'image_1' => $imageName1,
+                'image_2' => $imageName2,
+                'image_3' => $imageName3,
+                'image_4' => $imageName4,
+                'image_plan' => $imageName5,
                 'bloc' => $request->bloc,
-                'certificate' => $request->image_path_6,
+                'certificate' => $imageName6,
                 // 'specification_id' => $request->specification_id,
                 // 'properties_id' => $request->properties_id,
             ]);
+
+            Storage::disk('public/storage/image/image-1')->put($imageName1, file_get_contents($request->image_1));
+            Storage::disk('public/storage/image/image-2')->put($imageName2, file_get_contents($request->image_2));
+            Storage::disk('public/storage/image/image-3')->put($imageName3, file_get_contents($request->image_3));
+            Storage::disk('public/storage/image/image-4')->put($imageName4, file_get_contents($request->image_4));
+            Storage::disk('public/storage/image/image-plan')->put($imageName5, file_get_contents($request->image_plan));
+            Storage::disk('public/storage/image/certificate')->put($imageName6, file_get_contents($request->certificate));
+
 
             // $unit = Unit::create($validateData);
 
@@ -137,13 +155,13 @@ class UnitController extends Controller
                 'description' => 'required',
                 'price' => 'required',
                 'rent' => 'required',
-                'image_1' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_2' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_3' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_4' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                'image_plan' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                'image_1' => 'required',
+                'image_2' => 'required',
+                'image_3' => 'required',
+                'image_4' => 'required',
+                'image_plan' => 'required',
                 'bloc' => 'required',
-                'certificate' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                'certificate' => 'required',
                 // 'specification_id' => 'required',
                 // 'properties_id' => 'required',
             ]);
@@ -205,12 +223,12 @@ class UnitController extends Controller
     public function imageStore(Request $request)
     {
         $this->validate($request, [
-            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'image' => 'required',
         ]);
-        $image_path = $request->file('image')->store('image', 'public');
+        $image = $request->file('image')->store('image', 'public');
 
         $data = Unit::create([
-            'image' => $image_path,
+            'image' => $image,
         ]);
 
         return response($data, Response::HTTP_CREATED);
