@@ -16,9 +16,9 @@ class DeveloperController extends Controller
     {
         $data = Developer::all();
 
-        if($data){
+        if ($data) {
             return ApiFormatter::createApi('200', 'Success', $data);
-        }else{
+        } else {
             return ApiFormatter::createApi('404', 'Data Not Found', null);
         }
     }
@@ -26,11 +26,10 @@ class DeveloperController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    
+
     public function create()
     {
-        return view('admin.developer.create',[
-        ]);
+        return view('admin.developer.create', []);
     }
 
     /**
@@ -39,7 +38,7 @@ class DeveloperController extends Controller
 
     public function store(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'email' => 'required|email|unique:developers',
                 'password'  => 'required|min:8',
@@ -62,14 +61,15 @@ class DeveloperController extends Controller
                 'phone_number'  => $request->phone_number,
             ]);
 
-            $developer = Developer::where('id','=', $data->id)->get();
+            $developer = Developer::where('id', '=', $data->id)->get();
 
             if ($developer) {
-                return ApiFormatter::createApi('200', 'Data Created', $data).redirect('/admin/unit/data',);
+                return ApiFormatter::createApi('200', 'Data Created', $data);
+                // .redirect('/admin/unit/data',);
             } else {
                 return ApiFormatter::createApi('400', 'Bad Request', null);
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('400', 'Failed', $e);
         }
     }
@@ -78,7 +78,7 @@ class DeveloperController extends Controller
      */
     public function show(Developer $developer)
     {
-        return view('admin.developer.show',[
+        return view('admin.developer.show', [
             'developer' => $developer
         ]);
     }
@@ -89,7 +89,7 @@ class DeveloperController extends Controller
      */
     public function edit(Developer $developer)
     {
-        return view('admin.developer.edit',[
+        return view('admin.developer.edit', [
             'developer' => $developer
         ]);
     }
@@ -97,10 +97,10 @@ class DeveloperController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    
-    public function update(Request $request, Developer $developer)
+
+    public function update(Request $request, Developer $developer,string $id)
     {
-        try{
+        try {
             $request->validate([
                 'email' => 'required|email|unique:developers',
                 'password'  => 'required|min:8',
@@ -110,6 +110,8 @@ class DeveloperController extends Controller
                 'license'   => 'required',
                 'phone_number'  => 'required',
             ]);
+
+            $developer= Developer::findOrfail($id);
 
             $developer->update([
                 'email' => $request->email,
@@ -121,8 +123,10 @@ class DeveloperController extends Controller
                 'phone_number'  => $request->phone_number
             ]);
 
+            $developer = Developer::where('id', '=', $developer->id)->get();
+
             return ApiFormatter::createApi('201', 'Success', $developer);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('400', 'Failed', $e);
         }
     }
@@ -130,19 +134,19 @@ class DeveloperController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    
-    public function destroy(Developer $developer,string $id)
+
+    public function destroy(Developer $developer, string $id)
     {
-        try{
+        try {
             $developer = Developer::findOrfail($id);
 
             $data = $developer->delete();
-            if($data){
+            if ($data) {
                 return ApiFormatter::createApi('200', 'Success', $data);
-            }else{
+            } else {
                 return ApiFormatter::createApi('400', 'Failed', null);
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('500', 'Internal Server Error', null);
         }
     }

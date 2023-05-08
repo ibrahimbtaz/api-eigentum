@@ -19,15 +19,13 @@ class UnitController extends Controller
     {
         $data = Unit::all();
 
-        if($data){
-            return ApiFormatter::createApi('200', 'Success', $data)
-                                .view('admin.unit.all',["units" => Unit::all()]);
-        }else{
+        if ($data) {
+            return ApiFormatter::createApi('200', 'Success', $data);
+
+            // return view('admin.unit.all', ["units" => Unit::all()]);
+        } else {
             return ApiFormatter::createApi('404', 'Data Not Found', null);
         }
-
-
-
     }
 
     /**
@@ -35,7 +33,7 @@ class UnitController extends Controller
      */
     public function create()
     {
-        return view('admin.unit.create',[
+        return view('admin.unit.create', [
             // "dokter" => Dokter::all()
         ]);
     }
@@ -45,7 +43,7 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
@@ -61,13 +59,13 @@ class UnitController extends Controller
                 // 'specification_id' => 'required',
                 // 'properties_id' => 'required',
             ]);
-            
-            $imageName1 = Str::random(32).".".$request->image_1->getClientOriginalExtension();
-            $imageName2 = Str::random(32).".".$request->image_2->getClientOriginalExtension();
-            $imageName3 = Str::random(32).".".$request->image_3->getClientOriginalExtension();
-            $imageName4 = Str::random(32).".".$request->image_4->getClientOriginalExtension();
-            $imageName5 = Str::random(32).".".$request->image_plan->getClientOriginalExtension();
-            $imageName6 = Str::random(32).".".$request->certificate->getClientOriginalExtension();
+
+            $imageName1 = Str::random(32) . "." . $request->image_1->getClientOriginalExtension();
+            $imageName2 = Str::random(32) . "." . $request->image_2->getClientOriginalExtension();
+            $imageName3 = Str::random(32) . "." . $request->image_3->getClientOriginalExtension();
+            $imageName4 = Str::random(32) . "." . $request->image_4->getClientOriginalExtension();
+            $imageName5 = Str::random(32) . "." . $request->image_plan->getClientOriginalExtension();
+            $imageName6 = Str::random(32) . "." . $request->certificate->getClientOriginalExtension();
 
             // $image_1 = $request->file('image_1')->store('image', 'public');
             // $image_2 = $request->file('image_2')->store('image', 'public');
@@ -92,30 +90,25 @@ class UnitController extends Controller
                 // 'properties_id' => $request->properties_id,
             ]);
 
-            Storage::disk('public/storage/image/image-1')->put($imageName1, file_get_contents($request->image_1));
-            Storage::disk('public/storage/image/image-2')->put($imageName2, file_get_contents($request->image_2));
-            Storage::disk('public/storage/image/image-3')->put($imageName3, file_get_contents($request->image_3));
-            Storage::disk('public/storage/image/image-4')->put($imageName4, file_get_contents($request->image_4));
-            Storage::disk('public/storage/image/image-plan')->put($imageName5, file_get_contents($request->image_plan));
-            Storage::disk('public/storage/image/certificate')->put($imageName6, file_get_contents($request->certificate));
+            Storage::disk('public')->put($imageName1, file_get_contents($request->image_1));
+            Storage::disk('public')->put($imageName2, file_get_contents($request->image_2));
+            Storage::disk('public')->put($imageName3, file_get_contents($request->image_3));
+            Storage::disk('public')->put($imageName4, file_get_contents($request->image_4));
+            Storage::disk('public')->put($imageName5, file_get_contents($request->image_plan));
+            Storage::disk('public')->put($imageName6, file_get_contents($request->certificate));
 
 
             // $unit = Unit::create($validateData);
 
 
-            $data = Unit::where('id','=', $unit->id)->get();
+            $data = Unit::where('id', '=', $unit->id)->get();
 
             if ($data) {
-                return ApiFormatter::createApi('200', 'Data Created', $data).redirect('/admin/unit/data',);
+                return ApiFormatter::createApi('200', 'Data Created', $data) . redirect('/admin/unit/data',);
             } else {
                 return ApiFormatter::createApi('400', 'Bad Request', null);
             }
-
-            
-            
-            
-
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('400', 'Internal Server Error', null);
         }
     }
@@ -125,10 +118,10 @@ class UnitController extends Controller
      */
     public function show(string $id)
     {
-        $data = Unit::where('id','=', $id)->get();
-        
+        $data = Unit::where('id', '=', $id)->get();
+
         if ($data) {
-            return ApiFormatter::createApi('200', 'Data Created', $data).view('admin.unit.detail',["unit" => Unit::find($id)]);
+            return ApiFormatter::createApi('200', 'Data Created', $data) . view('admin.unit.detail', ["unit" => Unit::find($id)]);
         } else {
             return ApiFormatter::createApi('400', 'Bad Request', null);
         }
@@ -149,7 +142,7 @@ class UnitController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
+        try {
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
@@ -166,7 +159,7 @@ class UnitController extends Controller
                 // 'properties_id' => 'required',
             ]);
 
-            
+
 
             $unit = Unit::findOrfail($id);
 
@@ -185,17 +178,15 @@ class UnitController extends Controller
                 // 'specification_id' => $request->specification_id,
                 // 'properties_id' => $request->properties_id,
             ]);
-            
-            $data = Unit::where('id','=', $unit->id)->get();
+
+            $data = Unit::where('id', '=', $unit->id)->get();
 
             if ($data) {
-                return ApiFormatter::createApi('200', 'Data Created', $data).redirect('/admin/unit/data',);
+                return ApiFormatter::createApi('200', 'Data Created', $data) . redirect('/admin/unit/data',);
             } else {
                 return ApiFormatter::createApi('400', 'Bad Request', null);
             }
-
-
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('400', 'Internal Server Error', null);
         }
     }
@@ -205,19 +196,19 @@ class UnitController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             $unit = Unit::findOrfail($id);
 
             $data = $unit->delete();
 
             if ($data) {
-                return ApiFormatter::createApi('200', 'Data Deleted', null).redirect('/admin/unit/data',);
+                return ApiFormatter::createApi('200', 'Data Deleted', null) . redirect('/admin/unit/data',);
             } else {
                 return ApiFormatter::createApi('400', 'Bad Request', null);
             }
-        }catch(Exception $e){
-                return ApiFormatter::createApi('400', 'Internal Server Error', null);
-            }
+        } catch (Exception $e) {
+            return ApiFormatter::createApi('400', 'Internal Server Error', null);
+        }
     }
 
     public function imageStore(Request $request)

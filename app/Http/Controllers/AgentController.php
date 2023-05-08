@@ -16,9 +16,9 @@ class AgentController extends Controller
     {
         $data = Agent::all();
 
-        if($data){
+        if ($data) {
             return ApiFormatter::createApi('200', 'Success', $data);
-        }else{
+        } else {
             return ApiFormatter::createApi('404', 'Data Not Found', null);
         }
     }
@@ -28,15 +28,14 @@ class AgentController extends Controller
      */
     public function create()
     {
-        return view('admin.agent.create',[
-        ]);
+        return view('admin.agent.create', []);
     }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'email' => 'required|email|unique:users',
                 'password'  => 'required|min:8',
@@ -47,9 +46,6 @@ class AgentController extends Controller
                 'phone_number'  => 'required',
             ]);
 
-            $image = $request->file('image');
-            $image_name = time().'.'.$image->extension();
-            $image->move(public_path('images'),$image_name);
 
             $data = Agent::create([
                 'email' => $request->email,
@@ -61,12 +57,12 @@ class AgentController extends Controller
                 'phone_number'  => $request->phone_number,
             ]);
 
-            if($data){
+            if ($data) {
                 return ApiFormatter::createApi('200', 'Success', $data);
-            }else{
+            } else {
                 return ApiFormatter::createApi('400', 'Failed', null);
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('400', 'Failed', null);
         }
     }
@@ -76,7 +72,7 @@ class AgentController extends Controller
      */
     public function show(Agent $agent)
     {
-        return view('admin.agent.show',[
+        return view('admin.agent.show', [
             "agent" => $agent
         ]);
     }
@@ -86,7 +82,7 @@ class AgentController extends Controller
      */
     public function edit(Agent $agent)
     {
-        return view('admin.agent.edit',[
+        return view('admin.agent.edit', [
             "agent" => $agent
         ]);
     }
@@ -94,9 +90,9 @@ class AgentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Agent $agent)
+    public function update(Request $request, Agent $agent, string $id)
     {
-        try{
+        try {
             $request->validate([
                 'email' => 'required|email|unique:users',
                 'password'  => 'required|min:8',
@@ -107,11 +103,9 @@ class AgentController extends Controller
                 'phone_number'  => 'required',
             ]);
 
-            // $image = $request->file('image');
-            // $image_name = time().'.'.$image->extension();
-            // $image->move(public_path('images'),$image_name);
+            $data = Agent::findOrfail($id);
 
-            $data = Agent::where('id',$agent->id)->update([
+            $data->update([
                 'email' => $request->email,
                 'password'  => bcrypt($request->password),
                 'name'  => $request->name,
@@ -121,12 +115,14 @@ class AgentController extends Controller
                 'phone_number'  => $request->phone_number,
             ]);
 
-            if($data){
+            $agent = Agent::where('id', '=', $agent->id)->get();
+
+            if ($agent) {
                 return ApiFormatter::createApi('200', 'Success', $data);
-            }else{
+            } else {
                 return ApiFormatter::createApi('400', 'Failed', null);
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('400', 'Failed', null);
         }
     }
@@ -134,17 +130,18 @@ class AgentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Agent $agent)
+    public function destroy(string $id)
     {
-        try{
-            $data = Agent::where('id',$agent->id)->delete();
+        try {
+            $agent = Agent::findOrfail($id);
+            $data = $agent->delete();
 
-            if($data){
+            if ($data) {
                 return ApiFormatter::createApi('200', 'Success', $data);
-            }else{
+            } else {
                 return ApiFormatter::createApi('400', 'Failed', null);
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ApiFormatter::createApi('400', 'Failed', null);
         }
     }

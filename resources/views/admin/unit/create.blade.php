@@ -8,7 +8,7 @@
                 <br>
                 <div class="card bg-light">
                     <div class="card-body">
-                        <form method="post" action="/admin/unit/add">
+                        <form method="post" action="/admin/unit/add" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <label for="" class="form-label">title</label>
@@ -36,31 +36,31 @@
                             <br>
                             <div class="form-group">
                                 <label for="" class="form-label">image_1</label>
-                                <input class="form-control noscroll" id="image_1" name="image_1"
+                                <input type="file" class="form-control noscroll" id="image_1" name="image_1"
                                     value="{{ old('image_1') }}">
                             </div>
                             <br>
                             <div class="form-group">
                                 <label for="" class="form-label">image_2</label>
-                                <input class="form-control noscroll" id="image_2" name="image_2"
+                                <input type="file" class="form-control noscroll" id="image_2" name="image_2"
                                     value="{{ old('image_2') }}">
                             </div>
                             <br>
                             <div class="form-group">
                                 <label for="" class="form-label">image_3</label>
-                                <input class="form-control noscroll" id="image_3" name="image_3"
+                                <input type="file" class="form-control noscroll" id="image_3" name="image_3"
                                     value="{{ old('image_3') }}">
                             </div>
                             <br>
                             <div class="form-group">
                                 <label for="" class="form-label">image_4</label>
-                                <input class="form-control noscroll" id="image_4" name="image_4"
+                                <input type="file" class="form-control noscroll" id="image_4" name="image_4"
                                     value="{{ old('image_4') }}">
                             </div>
                             <br>
                             <div class="form-group">
                                 <label for="" class="form-label">image_plan</label>
-                                <input class="form-control noscroll" id="image_plan" name="image_plan"
+                                <input type="file" class="form-control noscroll" id="image_plan" name="image_plan"
                                     value="{{ old('image_plan') }}">
                             </div>
                             <br>
@@ -72,7 +72,7 @@
                             <br>
                             <div class="form-group">
                                 <label for="" class="form-label">certificate</label>
-                                <input class="form-control noscroll" id="certificate" name="certificate"
+                                <input type="file" class="form-control noscroll" id="certificate" name="certificate"
                                     value="{{ old('certificate') }}">
                             </div>
                             <br>
@@ -82,7 +82,7 @@
                                     value="{{ old('kode_pasien') }}">
                             </div> --}}
                             <br>
-                            
+
                             <div class="float-end">
                                 <a type="button" class="btn btn-warning" href="/admin/unit/data">Back</a>
                                 <button type="submit" class="btn btn-primary">Submit</button>
